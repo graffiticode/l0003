@@ -1,17 +1,6 @@
 steps:
-  # Install dependencies
-  - name: 'node'
-    entrypoint: 'npm'
-    args:
-      - 'ci'
-
-  # Run tests (if you have them)
-  # - name: 'node'
-  #   entrypoint: 'npm'
-  #   args:
-  #     - 'test'
-
-  # Build Docker image
+  # Build Docker image (the Dockerfile installs deps via `npm ci` on node:22-alpine,
+  # matching the lockfile — no redundant top-level install on a mismatched node:latest).
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
