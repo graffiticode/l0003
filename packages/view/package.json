@@ -28,7 +28,7 @@
     "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "@graffiticode/l0000-view": "file:../../../l0000/packages/view"
+    "@graffiticode/l0000-view": "^0.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.11",
