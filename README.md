@@ -3,40 +3,30 @@
 [![License: MIT](https://img.shields.io/badge/Code-MIT-blue.svg)](packages/LICENSE)
 [![License: CC BY 4.0](https://img.shields.io/badge/Docs-CC%20BY%204.0-lightgrey.svg)](LICENSE-DOCS)
 
-L0003 is a **template for creating new Graffiticode languages**. Clone this repository when starting a new language.
+L0003 is a Graffiticode dialect — the first child of [@graffiticode/l0000](https://www.npmjs.com/package/@graffiticode/l0000). It inherits L0000's base functional vocabulary (arithmetic, lists, lambdas, `map`/`filter`/`reduce`, pattern matching, tags) and adds a small set of UI primitives for rendering hello greetings, images, and themed output.
 
-## What it provides
+## Vocabulary
 
-L0003 includes example implementations to demonstrate how to build language features:
+L0003 adds the following on top of the L0000 base lexicon:
 
-| Function | Purpose |
-|----------|---------|
-| `hello <string>` | Example text output |
-| `theme [dark\|light] <expr>` | Example interactive UI with toggle |
-| `image <url>` | Example image rendering |
+| Function | Arity | Example | Description |
+|----------|:-----:|---------|-------------|
+| `hello`  | 1 | `hello "world"..` | Renders **hello, world!** |
+| `image`  | 1 | `image "https://example.com/photo.jpg"..` | Renders an image at the given URL |
+| `theme`  | 2 | `theme DARK hello "world"..` | Wraps a UI expression in a theme (`DARK` or `LIGHT`) with a toggle |
+| `id`     | 2 | `id "tag" expr..` | Tags an expression with a stable identifier |
 
-## Usage
+See [`packages/core/spec/`](packages/core/spec/) for the full language specification, examples, and authoring guide.
 
-When creating a new Graffiticode language:
+## Structure
 
-1. Clone this repository
-2. Update the port number and language ID
-3. Replace the example functions with your language's vocabulary
-4. Customize the form view for your output rendering needs
+This is an npm workspaces monorepo with three packages:
 
-The `theme` feature demonstrates how to build interactive UI components - use it as a reference when adding interactivity to your language.
+- **`packages/core`** — `@graffiticode/l0003`: the language itself (lexicon, checker, transformer). Pure TypeScript, depends on `@graffiticode/l0000`.
+- **`packages/api`** — `@graffiticode/api-l0003`: the L0003 language server. Express app exposing `/compile`, `/form`, and static assets. Runs on port `50003`.
+- **`packages/view`** — `@graffiticode/l0003-view`: the React view component (Form) used to render compiled output. Built with Vite + Tailwind, layered on top of `@graffiticode/l0000-view`.
 
-## Architecture
-
-- **packages/api** - Node.js/Express backend compiler
-- **packages/app** - React/TypeScript frontend
-
-Standard Graffiticode compiler pipeline: Checker (validates AST) → Transformer (produces output).
-
-## Related languages
-
-- **L0011** - Production language for form generation (console property editor)
-- **L0012** - Production language for data capture (idempotent value-to-ID mapping)
+The top-level build composes all three: `core` and `view` are built and bundled into `packages/api/static/`, which the API serves.
 
 ## Getting started
 
@@ -44,9 +34,25 @@ Standard Graffiticode compiler pipeline: Checker (validates AST) → Transformer
 # Install dependencies
 npm install
 
-# Start the API server
-npm start
+# Build everything (core → api → view → static bundle)
+npm run build
+
+# Start the dev server (API on :50003, Firestore emulator on :8080)
+npm run dev
 ```
+
+Other useful scripts:
+
+- `npm run lint` — lint the whole monorepo
+- `npm run pack` — build and pack the view package for distribution
+- `npm run gcp:build` / `npm run gcp:deploy` — deploy to Cloud Run
+
+## Environment
+
+- `PORT` — API port (default `50003`)
+- `AUTH_URL` — auth service URL (default `https://auth.graffiticode.org`; dev uses `http://127.0.0.1:4100`)
+- `FIRESTORE_EMULATOR_HOST` — local Firestore emulator (dev: `127.0.0.1:8080`)
+- `NODE_ENV` — `development` or `production`
 
 ## License
 
