@@ -1,4 +1,5 @@
 {
+  "publishConfig": { "access": "public" },
   "name": "@graffiticode/l0003",
   "version": "0.1.0",
   "description": "L0003 — a Graffiticode dialect (hello/image/theme/print) inheriting @graffiticode/l0000",
